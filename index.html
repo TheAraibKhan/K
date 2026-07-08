@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Dancing+Script:wght@500;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Dancing+Script:wght@500;700&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,7 +21,873 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      :root {
+        --bg: #fff8fb;
+        --bg-soft: #fff5f7;
+        --cream: #fffaf0;
+        --pink: #f9a8d4;
+        --rose: #ec4899;
+        --deep: #db2777;
+        --lavender: #c4b5fd;
+        --lilac: #e9d5ff;
+        --peach: #fdba74;
+        --gold: #f5c86b;
+        --text: #4b1d32;
+        --muted: #7a4b61;
+        --shadow: 0 20px 45px rgba(219, 39, 119, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(249, 168, 212, 0.28),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(196, 181, 253, 0.24),
+            transparent 26%
+          ),
+          var(--bg);
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.7) 1px,
+          transparent 1px
+        );
+        background-size: 20px 20px;
+        opacity: 0.2;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .page,
+      .loader-screen {
+        position: relative;
+        z-index: 1;
+      }
+      .hidden {
+        display: none;
+      }
+      .loader-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(249, 168, 212, 0.35),
+            transparent 28%
+          ),
+          linear-gradient(135deg, #fff7fb 0%, #fff6f8 50%, #fef7f3 100%);
+      }
+      .loader-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 640px;
+        padding: 2.5rem;
+        border-radius: 2rem;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+      }
+      .loader-orb {
+        position: absolute;
+        inset: auto auto 4rem 50%;
+        width: 240px;
+        height: 240px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(249, 168, 212, 0.8),
+          rgba(236, 72, 153, 0.25),
+          transparent 70%
+        );
+        filter: blur(22px);
+        animation: drift 8s ease-in-out infinite;
+      }
+      .loader-kicker,
+      .eyebrow,
+      .card-kicker,
+      .mini-label,
+      .game-label,
+      .status-pill {
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--deep);
+      }
+      .loader-content h1,
+      .hero-title,
+      .section-heading h2,
+      .constellation-copy h2,
+      .final-card h2 {
+        font-family: "Cormorant Garamond", serif;
+        line-height: 1.05;
+      }
+      .loader-content h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin: 0.4rem 0 0.8rem;
+      }
+      .loader-content p,
+      .hero-subtitle,
+      .section-copy {
+        color: var(--muted);
+      }
+      .btn-primary,
+      .btn-secondary,
+      .glass-pill,
+      .note-card,
+      .back-to-top,
+      .modal-close,
+      .surprise-btn {
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease,
+          background 0.3s ease;
+      }
+      .btn-primary,
+      .btn-secondary,
+      .glass-pill,
+      .note-card,
+      .surprise-btn {
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.9rem 1.4rem;
+        border-radius: 999px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(219, 39, 119, 0.16);
+      }
+      .btn-primary,
+      .surprise-btn {
+        color: white;
+        background: linear-gradient(135deg, var(--rose), var(--deep));
+      }
+      .btn-secondary {
+        color: var(--deep);
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(236, 72, 153, 0.12);
+      }
+      .glass-pill {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px);
+        color: var(--deep);
+        padding: 0.75rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 24px rgba(219, 39, 119, 0.09);
+      }
+      .btn-primary:hover,
+      .btn-secondary:hover,
+      .glass-pill:hover,
+      .note-card:hover,
+      .back-to-top:hover,
+      .surprise-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 35px rgba(219, 39, 119, 0.2);
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before,
+      .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.55;
+        pointer-events: none;
+      }
+      .hero::before {
+        width: 320px;
+        height: 320px;
+        background: rgba(249, 168, 212, 0.3);
+        top: -60px;
+        right: -80px;
+        animation: float 7s ease-in-out infinite;
+      }
+      .hero::after {
+        width: 260px;
+        height: 260px;
+        background: rgba(196, 181, 253, 0.22);
+        bottom: 80px;
+        left: -70px;
+        animation: float 9s ease-in-out infinite reverse;
+      }
+      .hero-title {
+        font-size: clamp(2.6rem, 5.5vw, 5rem);
+        margin: 0.4rem 0 1rem;
+        color: var(--text);
+      }
+      .script-text {
+        font-family: "Dancing Script", cursive;
+        color: var(--deep);
+      }
+      .hero-subtitle {
+        font-size: 1.08rem;
+        line-height: 1.8;
+        max-width: 720px;
+      }
+      .hero-status-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin-top: 1.2rem;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(236, 72, 153, 0.12);
+        box-shadow: 0 8px 20px rgba(219, 39, 119, 0.09);
+      }
+      .mini-note,
+      .hero-card,
+      .feature-card,
+      .letter-card,
+      .timeline-card,
+      .polaroid-card,
+      .flip-card,
+      .stat-card,
+      .quote-card,
+      .world-card,
+      .playlist-card,
+      .final-card,
+      .game-card,
+      .constellation-card,
+      .repeating-card,
+      .home-card,
+      .room-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(14px);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .mini-note {
+        padding: 1.4rem 1.6rem;
+        max-width: 520px;
+      }
+      .hero-card {
+        padding: 2rem;
+        min-height: 360px;
+        display: flex;
+        align-items: center;
+      }
+      .hero-card-inner {
+        width: 100%;
+      }
+      .hero-card h3 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.65rem;
+        line-height: 1.3;
+        margin: 0.4rem 0 1rem;
+      }
+      .stars-row {
+        color: var(--gold);
+        font-size: 1.3rem;
+        letter-spacing: 0.5rem;
+        margin-top: 1rem;
+      }
+      .section {
+        position: relative;
+      }
+      .section-heading {
+        max-width: 720px;
+        margin-bottom: 2rem;
+      }
+      .section-heading h2 {
+        margin: 0.3rem 0 0;
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+      }
+      .feature-card,
+      .stat-card,
+      .quote-card,
+      .world-card,
+      .playlist-card,
+      .repeating-card,
+      .home-card,
+      .room-card {
+        padding: 1.4rem;
+      }
+      .feature-card:hover,
+      .polaroid-card:hover,
+      .flip-card:hover,
+      .stat-card:hover,
+      .quote-card:hover,
+      .world-card:hover,
+      .playlist-card:hover,
+      .timeline-card:hover,
+      .game-card:hover,
+      .constellation-card:hover,
+      .letter-card:hover,
+      .hero-card:hover,
+      .mini-note:hover,
+      .repeating-card:hover,
+      .home-card:hover,
+      .room-card:hover {
+        transform: translateY(-4px) scale(1.01);
+      }
+      .icon-bubble {
+        width: 3rem;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(249, 168, 212, 0.25),
+          rgba(196, 181, 253, 0.2)
+        );
+        color: var(--deep);
+        margin-bottom: 0.8rem;
+      }
+      .letter-card {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .letter-top,
+      .letter-signature {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        color: var(--muted);
+      }
+      .letter-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(245, 200, 107, 0.25);
+        pointer-events: none;
+      }
+      .letter-body p {
+        font-size: 1.03rem;
+        line-height: 1.9;
+        color: var(--text);
+        margin: 1.1rem 0;
+      }
+      .handwritten {
+        font-family: "Dancing Script", cursive;
+        color: var(--deep);
+        font-size: 1.35rem;
+      }
+      .timeline {
+        position: relative;
+        padding-left: 1.2rem;
+        border-left: 2px solid rgba(236, 72, 153, 0.2);
+        margin-left: 0.75rem;
+      }
+      .timeline-item {
+        position: relative;
+        margin-bottom: 1.3rem;
+        padding-left: 1.5rem;
+      }
+      .timeline-dot {
+        position: absolute;
+        left: -1.6rem;
+        top: 0.8rem;
+        width: 0.95rem;
+        height: 0.95rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--rose), var(--gold));
+        box-shadow: 0 0 0 0.35rem rgba(236, 72, 153, 0.14);
+      }
+      .timeline-card {
+        padding: 1.15rem 1.2rem;
+      }
+      .chapter-label {
+        display: inline-block;
+        margin-bottom: 0.55rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        background: rgba(249, 168, 212, 0.18);
+        color: var(--deep);
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      .polaroid-card {
+        padding: 1rem;
+        transform: rotate(-2deg);
+      }
+      .polaroid-card:nth-child(2) {
+        transform: rotate(2deg);
+      }
+      .polaroid-card:nth-child(3) {
+        transform: rotate(-1deg);
+      }
+      .polaroid-photo {
+        height: 220px;
+        border-radius: 1rem;
+        margin-bottom: 0.9rem;
+        background-size: cover;
+        background-position: center;
+      }
+      .photo-one {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(249, 168, 212, 0.35),
+            rgba(196, 181, 253, 0.45)
+          ),
+          url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80");
+      }
+      .photo-two {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(253, 186, 116, 0.3),
+            rgba(236, 72, 153, 0.24)
+          ),
+          url("https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80");
+      }
+      .photo-three {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(196, 181, 253, 0.3),
+            rgba(249, 168, 212, 0.25)
+          ),
+          url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80");
+      }
+      .flip-card {
+        perspective: 1000px;
+        min-height: 220px;
+        cursor: pointer;
+      }
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        transform-style: preserve-3d;
+        transition: transform 0.8s ease;
+      }
+      .flip-card.is-flipped .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+      .flip-face {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        border-radius: 1.5rem;
+        padding: 1.2rem;
+        backface-visibility: hidden;
+        text-align: center;
+      }
+      .flip-front {
+        background: linear-gradient(
+          135deg,
+          rgba(249, 168, 212, 0.2),
+          rgba(255, 255, 255, 0.8)
+        );
+      }
+      .flip-back {
+        background: linear-gradient(
+          135deg,
+          rgba(196, 181, 253, 0.25),
+          rgba(255, 255, 255, 0.9)
+        );
+        transform: rotateY(180deg);
+      }
+      .counter {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.2rem;
+        margin: 0 0 0.35rem;
+        color: var(--deep);
+      }
+      .note-card {
+        padding: 1.15rem;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: var(--text);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.8),
+          rgba(249, 168, 212, 0.15)
+        );
+      }
+      .quote-card h3,
+      .world-card h3,
+      .playlist-card h3,
+      .home-card h3,
+      .room-card h3,
+      .repeating-card h3 {
+        font-family: "Cormorant Garamond", serif;
+        margin: 0.4rem 0 0.5rem;
+      }
+      .constellation-card {
+        padding: 2rem;
+        display: grid;
+        gap: 2rem;
+        align-items: center;
+        grid-template-columns: 1fr 1fr;
+      }
+      .constellation-visual {
+        min-height: 320px;
+        border-radius: 2rem;
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(249, 168, 212, 0.25),
+            transparent 40%
+          ),
+          linear-gradient(180deg, #2d1633, #4b2841 60%, #1f1027 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .star {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      }
+      .line {
+        position: absolute;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(245, 200, 107, 0.2),
+          rgba(255, 255, 255, 0.7)
+        );
+        transform-origin: left center;
+      }
+      .world-card,
+      .playlist-card,
+      .repeating-card,
+      .home-card,
+      .room-card {
+        text-align: center;
+      }
+      .world-card i,
+      .playlist-card .disc {
+        font-size: 1.8rem;
+        color: var(--deep);
+      }
+      .playlist-card .disc {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        background: radial-gradient(
+          circle at center,
+          var(--gold),
+          var(--rose) 65%,
+          #fff 66%
+        );
+        box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.35);
+        animation: spinSlow 8s linear infinite;
+      }
+      .game-card {
+        padding: 1.5rem;
+      }
+      .game-panel {
+        margin-bottom: 1rem;
+      }
+      .game-score {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.3rem;
+        color: var(--deep);
+      }
+      .game-arena {
+        min-height: 260px;
+        border-radius: 1.3rem;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.75),
+          rgba(249, 168, 212, 0.2)
+        );
+        border: 1px dashed rgba(236, 72, 153, 0.18);
+      }
+      .heart-drop {
+        position: absolute;
+        font-size: 1.4rem;
+        color: var(--deep);
+        cursor: pointer;
+        animation: popIn 0.35s ease;
+      }
+      .final-card {
+        padding: 2rem;
+        text-align: center;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .back-to-top {
+        position: fixed;
+        right: 1.25rem;
+        bottom: 1.25rem;
+        z-index: 40;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, var(--rose), var(--deep));
+        color: white;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+      }
+      .back-to-top.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        background: rgba(27, 10, 24, 0.46);
+        backdrop-filter: blur(10px);
+      }
+      .modal-card {
+        width: min(560px, 100%);
+        padding: 2rem;
+        border-radius: 1.5rem;
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.95),
+          rgba(255, 245, 250, 0.95)
+        );
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(236, 72, 153, 0.12);
+        color: var(--deep);
+      }
+      .floating-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .floating-heart,
+      .floating-star {
+        position: absolute;
+        animation: rise 6s ease-out forwards;
+        opacity: 0.8;
+      }
+      .floating-heart {
+        color: var(--deep);
+        font-size: 1.1rem;
+      }
+      .floating-star {
+        color: var(--gold);
+        font-size: 0.9rem;
+      }
+      .cursor-glow {
+        position: fixed;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 50;
+        background: radial-gradient(
+          circle,
+          rgba(249, 168, 212, 0.25),
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+        mix-blend-mode: screen;
+      }
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 4px;
+        z-index: 55;
+        background: linear-gradient(90deg, var(--rose), var(--gold));
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(36px);
+        transition:
+          opacity 0.9s ease,
+          transform 0.9s ease;
+      }
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .text-soft {
+        color: var(--muted);
+      }
+      .soft-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.4rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        font-size: 0.8rem;
+        color: var(--deep);
+      }
+      .tiny-note {
+        font-size: 0.95rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .hero-card,
+      .mini-note,
+      .feature-card,
+      .letter-card,
+      .timeline-card,
+      .polaroid-card,
+      .flip-card,
+      .stat-card,
+      .quote-card,
+      .world-card,
+      .playlist-card,
+      .final-card,
+      .game-card,
+      .constellation-card,
+      .repeating-card,
+      .home-card,
+      .room-card {
+        overflow: hidden;
+      }
+      .hero-card::after,
+      .mini-note::after,
+      .letter-card::after,
+      .stat-card::after,
+      .repeating-card::after,
+      .home-card::after,
+      .room-card::after {
+        content: "";
+        position: absolute;
+        inset: auto -20% -40% auto;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(
+          circle,
+          rgba(249, 168, 212, 0.18),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .@keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-18px);
+        }
+      }
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-48%) translateY(-15px);
+        }
+      }
+      @keyframes rise {
+        0% {
+          transform: translateY(0) scale(0.9);
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-180px) scale(1.2);
+          opacity: 0;
+        }
+      }
+      @keyframes popIn {
+        0% {
+          transform: scale(0.4);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes spinSlow {
+        from {
+          transform: rotate(0);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (max-width: 900px) {
+        .constellation-card {
+          grid-template-columns: 1fr;
+        }
+        .hero-card {
+          min-height: unset;
+        }
+      }
+      @media (max-width: 600px) {
+        .loader-content,
+        .letter-card,
+        .final-card,
+        .modal-card {
+          padding: 1.4rem;
+        }
+        .hero-title {
+          font-size: 2.4rem;
+        }
+        .letter-top,
+        .letter-signature {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="loader" class="loader-screen">
@@ -46,11 +912,9 @@
         <div class="container mx-auto">
           <div class="flex justify-end mb-6">
             <button id="audioToggle" class="glass-pill">
-              <i class="fa-solid fa-music"></i>
-              <span>Soft audio off</span>
+              <i class="fa-solid fa-music"></i><span>Soft audio off</span>
             </button>
           </div>
-
           <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
             <div class="max-w-3xl">
               <p class="eyebrow">for my cutie patootie</p>
@@ -58,13 +922,24 @@
                 For My <span class="script-text">Cutie Patootie</span>, Kulsum
               </h1>
               <p id="typewriter" class="hero-subtitle"></p>
+              <div class="hero-status-row">
+                <span class="status-pill"
+                  ><i class="fa-solid fa-heart"></i> Heart: stolen</span
+                >
+                <span class="status-pill"
+                  ><i class="fa-solid fa-sparkles"></i> Mood: smitten</span
+                >
+                <span class="status-pill"
+                  ><i class="fa-solid fa-star"></i> Thought: Kulsum</span
+                >
+              </div>
               <div class="flex flex-wrap gap-4 mt-8">
                 <a href="#letter" class="btn-primary magnetic">Open My Heart</a>
                 <a href="#journey" class="btn-secondary magnetic"
                   >Scroll Through Our Little World</a
                 >
               </div>
-              <div class="mini-note reveal mt-10">
+              <div class="mini-note reveal mt-10 tilt-card">
                 <p class="mini-label">A little note for the lovely one</p>
                 <p>
                   Some names feel like home before you even know why. Kulsum,
@@ -72,8 +947,7 @@
                 </p>
               </div>
             </div>
-
-            <div class="hero-card reveal">
+            <div class="hero-card reveal tilt-card">
               <div class="hero-card-inner">
                 <p class="card-kicker">My favorite thought</p>
                 <h3>
@@ -98,9 +972,13 @@
             <div class="section-heading reveal">
               <p class="eyebrow">why you are so special</p>
               <h2>Everything about you feels like a quiet luxury.</h2>
+              <p class="section-copy">
+                A few of the many reasons you feel like a soft kind of miracle
+                to me.
+              </p>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card">
                 <div class="icon-bubble">
                   <i class="fa-solid fa-face-smile"></i>
                 </div>
@@ -109,32 +987,44 @@
                   It has a way of turning the smallest moment into something
                   tender and bright.
                 </p>
+                <p class="tiny-note">
+                  A quiet little spark that never fails to soften the day.
+                </p>
               </article>
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card">
                 <div class="icon-bubble"><i class="fa-solid fa-heart"></i></div>
                 <h3>Your Softness</h3>
                 <p>
                   You carry gentleness so naturally, as if kindness is your
                   favorite language.
                 </p>
+                <p class="tiny-note">
+                  The kind of warmth that lingers after the room goes still.
+                </p>
               </article>
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card feature-card-large">
                 <div class="icon-bubble"><i class="fa-solid fa-cloud"></i></div>
                 <h3>The Way You Exist</h3>
                 <p>
                   Even your presence feels like a soft breeze and a warm glow
                   all at once.
                 </p>
+                <p class="tiny-note">
+                  You make peace look graceful, and beauty look effortless.
+                </p>
               </article>
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card">
                 <div class="icon-bubble"><i class="fa-solid fa-moon"></i></div>
                 <h3>Your Calm</h3>
                 <p>
                   You bring a stillness that makes everything inside me breathe
                   a little easier.
                 </p>
+                <p class="tiny-note">
+                  Your calm feels like a hand on my heart.
+                </p>
               </article>
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card">
                 <div class="icon-bubble">
                   <i class="fa-solid fa-sparkles"></i>
                 </div>
@@ -143,13 +1033,19 @@
                   Even the little bits of playfulness in you make my heart feel
                   wonderfully alive.
                 </p>
+                <p class="tiny-note">
+                  The sweetest kind of imperfection, wrapped in charm.
+                </p>
               </article>
-              <article class="feature-card reveal">
+              <article class="feature-card reveal tilt-card">
                 <div class="icon-bubble"><i class="fa-solid fa-gem"></i></div>
                 <h3>Your Kind Heart</h3>
                 <p>
                   You make gentleness feel rare and beautiful, and I admire that
                   deeply.
+                </p>
+                <p class="tiny-note">
+                  The way you care says more than words ever could.
                 </p>
               </article>
             </div>
@@ -162,16 +1058,17 @@
               <p class="eyebrow">a letter i wanted you to feel</p>
               <h2>A little letter made of warmth and longing.</h2>
             </div>
-            <div class="letter-card reveal">
+            <div class="letter-card reveal tilt-card">
               <div class="letter-top">
-                <p>To Kulsum</p>
+                <p>To <span class="handwritten">Kulsum</span></p>
                 <p class="script-text">With all my heart</p>
               </div>
               <div class="letter-body">
                 <p class="reveal">
-                  My dear Kulsum, there are some people who arrive in your life
-                  and quietly change the shape of your thoughts. You are one of
-                  those rare souls. Soft, luminous, and impossible to forget.
+                  My dear <span class="handwritten">Kulsum</span>, there are
+                  some people who arrive in your life and quietly change the
+                  shape of your thoughts. You are one of those rare souls. Soft,
+                  luminous, and impossible to forget.
                 </p>
                 <p class="reveal">
                   I find myself thinking about the way you make ordinary moments
@@ -193,9 +1090,10 @@
                 </p>
                 <p class="reveal">
                   You are not just someone I admire. You are someone I carry in
-                  the gentlest part of my heart, the part that likes to imagine,
-                  to dream, and to hope. I hope you always know how deeply you
-                  are cherished.
+                  the gentlest part of my
+                  <span class="handwritten">heart</span>, the part that likes to
+                  imagine, to dream, and to hope. I hope you always know how
+                  deeply you are <span class="handwritten">cherished</span>.
                 </p>
               </div>
               <div class="letter-signature">
@@ -215,7 +1113,8 @@
             <div class="timeline">
               <div class="timeline-item reveal">
                 <div class="timeline-dot"></div>
-                <div class="timeline-card">
+                <div class="timeline-card tilt-card">
+                  <span class="chapter-label">Chapter 01</span>
                   <h3>The moment you became special</h3>
                   <p>
                     It was not dramatic. It was quiet. But something in me
@@ -225,7 +1124,8 @@
               </div>
               <div class="timeline-item reveal">
                 <div class="timeline-dot"></div>
-                <div class="timeline-card">
+                <div class="timeline-card tilt-card">
+                  <span class="chapter-label">Chapter 02</span>
                   <h3>When I started smiling more</h3>
                   <p>
                     Your name began to feel like a warm thought that visited me
@@ -235,7 +1135,8 @@
               </div>
               <div class="timeline-item reveal">
                 <div class="timeline-dot"></div>
-                <div class="timeline-card">
+                <div class="timeline-card tilt-card">
+                  <span class="chapter-label">Chapter 03</span>
                   <h3>When my thoughts began carrying your name</h3>
                   <p>
                     Somewhere between ordinary days, your presence became a
@@ -245,7 +1146,8 @@
               </div>
               <div class="timeline-item reveal">
                 <div class="timeline-dot"></div>
-                <div class="timeline-card">
+                <div class="timeline-card tilt-card">
+                  <span class="chapter-label">Chapter 04</span>
                   <h3>The little things I started noticing</h3>
                   <p>
                     The way your kindness lingers, the calm you leave behind,
@@ -255,7 +1157,8 @@
               </div>
               <div class="timeline-item reveal">
                 <div class="timeline-dot"></div>
-                <div class="timeline-card">
+                <div class="timeline-card tilt-card">
+                  <span class="chapter-label">Chapter 05</span>
                   <h3>The safe corner in my heart</h3>
                   <p>
                     You became the kind of feeling that brings comfort without
@@ -274,18 +1177,58 @@
               <h2>A dreamy wall of soft little keepsakes.</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <article class="polaroid-card reveal">
+              <article class="polaroid-card reveal tilt-card">
                 <div class="polaroid-photo photo-one"></div>
                 <p>Your cutest smile goes here.</p>
+                <p class="tiny-note">
+                  A memory I would frame in gold if I could.
+                </p>
               </article>
-              <article class="polaroid-card reveal">
+              <article class="polaroid-card reveal tilt-card">
                 <div class="polaroid-photo photo-two"></div>
                 <p>Our favorite moment, wrapped in blush and light.</p>
+                <p class="tiny-note">
+                  The kind of scene that feels almost too lovely to explain.
+                </p>
               </article>
-              <article class="polaroid-card reveal">
+              <article class="polaroid-card reveal tilt-card">
                 <div class="polaroid-photo photo-three"></div>
                 <p>One of the million reasons I adore you.</p>
+                <p class="tiny-note">
+                  A small treasure tucked into the soft corners of my mind.
+                </p>
               </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="repeating" class="section px-6 py-20 lg:px-12">
+          <div class="container mx-auto">
+            <div class="section-heading reveal">
+              <p class="eyebrow">what my heart keeps repeating</p>
+              <h2>
+                Little soft notes that drift through my thoughts like perfume.
+              </h2>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div class="repeating-card reveal tilt-card">
+                <h3>you make softness look effortless</h3>
+                <p>And somehow, even your quiet presence feels like comfort.</p>
+              </div>
+              <div class="repeating-card reveal tilt-card">
+                <h3>some names just feel like home</h3>
+                <p>
+                  Your name has become one of those rare gentle places I keep
+                  returning to.
+                </p>
+              </div>
+              <div class="repeating-card reveal tilt-card">
+                <h3>your calm lingers in me</h3>
+                <p>
+                  Even when the world is noisy, I still feel the peace you
+                  bring.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -297,7 +1240,7 @@
               <h2>Every little thing feels like a sweet secret.</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Eyes</h3>
@@ -311,7 +1254,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Smile</h3>
@@ -322,7 +1265,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Voice</h3>
@@ -336,7 +1279,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Innocence</h3>
@@ -350,7 +1293,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Strength</h3>
@@ -364,7 +1307,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flip-card reveal" data-flip="true">
+              <div class="flip-card reveal tilt-card" data-flip="true">
                 <div class="flip-card-inner">
                   <div class="flip-face flip-front">
                     <h3>Your Laugh</h3>
@@ -382,6 +1325,44 @@
           </div>
         </section>
 
+        <section id="home" class="section px-6 py-20 lg:px-12">
+          <div class="container mx-auto">
+            <div class="section-heading reveal">
+              <p class="eyebrow">the reasons you feel like home</p>
+              <h2>Why your presence has become a gentle kind of shelter.</h2>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-2">
+              <div class="home-card reveal tilt-card">
+                <h3>The calm you bring</h3>
+                <p>
+                  There is a softness in your presence that quiets the noise
+                  inside me.
+                </p>
+              </div>
+              <div class="home-card reveal tilt-card">
+                <h3>The comfort in your voice</h3>
+                <p>
+                  Even a simple word from you feels like a little lamp in the
+                  dark.
+                </p>
+              </div>
+              <div class="home-card reveal tilt-card">
+                <h3>The peace your name carries</h3>
+                <p>
+                  When I think of you, the air feels gentler and the moment
+                  feels kinder.
+                </p>
+              </div>
+              <div class="home-card reveal tilt-card">
+                <h3>The way your existence lingers</h3>
+                <p>
+                  You stay in my thoughts not through force, but through warmth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="metrics" class="section px-6 py-20 lg:px-12">
           <div class="container mx-auto">
             <div class="section-heading reveal">
@@ -391,21 +1372,25 @@
               </h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <div class="stat-card reveal">
+              <div class="stat-card reveal tilt-card">
                 <h3 class="counter" data-target="999">0</h3>
                 <p>plus reasons to adore you</p>
+                <div class="soft-badge">Heart status: stolen</div>
               </div>
-              <div class="stat-card reveal">
+              <div class="stat-card reveal tilt-card">
                 <h3 class="counter" data-target="100">0</h3>
                 <p>percent heart stolen by Kulsum</p>
+                <div class="soft-badge">Mood: hopelessly smitten</div>
               </div>
-              <div class="stat-card reveal">
+              <div class="stat-card reveal tilt-card">
                 <h3 class="counter" data-target="24">0</h3>
                 <p>hours of dreamy thoughts</p>
+                <div class="soft-badge">Smile trigger: your name</div>
               </div>
-              <div class="stat-card reveal">
+              <div class="stat-card reveal tilt-card">
                 <h3 class="counter" data-target="1">0</h3>
                 <p>very lucky person building this</p>
+                <div class="soft-badge">Forever loading: yes</div>
               </div>
             </div>
           </div>
@@ -419,36 +1404,36 @@
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               <button
-                class="note-card reveal"
+                class="note-card reveal tilt-card"
                 data-title="Open when you miss me"
                 data-message="I would reach for you in every tender way if I could, just to make your heart feel less far away."
               >
-                <i class="fa-solid fa-envelope"></i>
-                <span>Open when you miss me</span>
+                <i class="fa-solid fa-envelope"></i
+                ><span>Open when you miss me</span>
               </button>
               <button
-                class="note-card reveal"
+                class="note-card reveal tilt-card"
                 data-title="Open when you need a smile"
                 data-message="You deserve to be smiled at by the whole world, but especially by me."
               >
-                <i class="fa-solid fa-face-laugh-beam"></i>
-                <span>Open when you need a smile</span>
+                <i class="fa-solid fa-face-laugh-beam"></i
+                ><span>Open when you need a smile</span>
               </button>
               <button
-                class="note-card reveal"
+                class="note-card reveal tilt-card"
                 data-title="Open when you doubt how loved you are"
                 data-message="If comfort had a face, I think it would borrow a little from you and a little from the way I think of you."
               >
-                <i class="fa-solid fa-heart-circle-check"></i>
-                <span>Open when you doubt how loved you are</span>
+                <i class="fa-solid fa-heart-circle-check"></i
+                ><span>Open when you doubt how loved you are</span>
               </button>
               <button
-                class="note-card reveal"
-                data-title="Open for a surprise"
-                data-message="You are loved in the quiet places, the bright places, and every space in between."
+                class="note-card reveal tilt-card"
+                data-title="Open when you want a reminder of how lovely you are"
+                data-message="Even in the quietest part of the day, I still think of how lovely you are."
               >
-                <i class="fa-solid fa-stars"></i>
-                <span>Open for a surprise</span>
+                <i class="fa-solid fa-stars"></i
+                ><span>Open when you want a reminder</span>
               </button>
             </div>
           </div>
@@ -461,18 +1446,18 @@
               <h2>Poetic little answers for the one I adore.</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <article class="quote-card reveal">
+              <article class="quote-card reveal tilt-card">
                 <h3>If you were a season</h3>
                 <p>You would be spring, soft and full of new bloom.</p>
               </article>
-              <article class="quote-card reveal">
+              <article class="quote-card reveal tilt-card">
                 <h3>If you were a place</h3>
                 <p>
                   You would be somewhere warm and golden, where the air feels
                   kind.
                 </p>
               </article>
-              <article class="quote-card reveal">
+              <article class="quote-card reveal tilt-card">
                 <h3>If you were a song</h3>
                 <p>
                   You would be the kind that settles in the heart and never
@@ -485,7 +1470,7 @@
 
         <section id="constellation" class="section px-6 py-20 lg:px-12">
           <div class="container mx-auto">
-            <div class="constellation-card reveal">
+            <div class="constellation-card reveal tilt-card">
               <div class="constellation-copy">
                 <p class="eyebrow">night sky love</p>
                 <h2>
@@ -509,22 +1494,22 @@
               <h2>Even the smallest things remind me of your beauty.</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <article class="world-card reveal">
+              <article class="world-card reveal tilt-card">
                 <i class="fa-solid fa-sun"></i>
                 <h3>Sunrise</h3>
                 <p>Soft and golden like your gentleness.</p>
               </article>
-              <article class="world-card reveal">
+              <article class="world-card reveal tilt-card">
                 <i class="fa-solid fa-moon"></i>
                 <h3>Moonlight</h3>
                 <p>Quiet and tender, like your calm.</p>
               </article>
-              <article class="world-card reveal">
+              <article class="world-card reveal tilt-card">
                 <i class="fa-solid fa-seedling"></i>
                 <h3>Flowers</h3>
                 <p>Delicate and graceful, just like you.</p>
               </article>
-              <article class="world-card reveal">
+              <article class="world-card reveal tilt-card">
                 <i class="fa-solid fa-fire"></i>
                 <h3>Warmth</h3>
                 <p>Everything about your presence feels like comfort.</p>
@@ -539,7 +1524,7 @@
               <p class="eyebrow">little interactive delight</p>
               <h2>Catch the hearts and collect the reasons I love you.</h2>
             </div>
-            <div class="game-card reveal">
+            <div class="game-card reveal tilt-card">
               <div class="game-panel">
                 <p class="game-label">Collected hearts</p>
                 <div id="heartScore" class="game-score">0</div>
@@ -559,30 +1544,73 @@
               <h2>Songs that feel like you, in the gentlest way.</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              <article class="playlist-card reveal">
+              <article class="playlist-card reveal tilt-card">
                 <div class="disc"></div>
                 <h3>Moonlit Softness</h3>
                 <p>For evenings when everything feels tender and still.</p>
+                <p class="tiny-note">
+                  A soft song for the quietest kind of longing.
+                </p>
               </article>
-              <article class="playlist-card reveal">
+              <article class="playlist-card reveal tilt-card">
                 <div class="disc"></div>
                 <h3>Blush and Stardust</h3>
                 <p>
                   For the kind of feeling that glows quietly from the inside.
                 </p>
+                <p class="tiny-note">
+                  The one that feels like your smile arriving.
+                </p>
               </article>
-              <article class="playlist-card reveal">
+              <article class="playlist-card reveal tilt-card">
                 <div class="disc"></div>
                 <h3>Forever in a Whisper</h3>
                 <p>For the little romance that lives in the heart all day.</p>
+                <p class="tiny-note">
+                  A gentle dedication for the one who feels like home.
+                </p>
               </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="room" class="section px-6 py-20 lg:px-12">
+          <div class="container mx-auto">
+            <div class="section-heading reveal">
+              <p class="eyebrow">
+                if i could keep a room full of my favorite things about you
+              </p>
+              <h2>A little gallery of everything beautiful about Kulsum.</h2>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-3">
+              <div class="room-card reveal tilt-card">
+                <h3>Your smile</h3>
+                <p>
+                  The one that turns ordinary moments into little pieces of
+                  light.
+                </p>
+              </div>
+              <div class="room-card reveal tilt-card">
+                <h3>Your calm</h3>
+                <p>
+                  The kind that settles over everything and makes it feel
+                  softer.
+                </p>
+              </div>
+              <div class="room-card reveal tilt-card">
+                <h3>Your little habits</h3>
+                <p>
+                  The tiny details that make you feel so real, so lovely, so
+                  unforgettable.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         <section id="final" class="section px-6 py-20 lg:px-12">
           <div class="container mx-auto">
-            <div class="final-card reveal">
+            <div class="final-card reveal tilt-card">
               <p class="eyebrow">final note</p>
               <h2>Thank you for existing, Kulsum.</h2>
               <p>
@@ -595,7 +1623,7 @@
                 your kindness matters, and your heart matters more than you may
                 ever know.
               </p>
-              <button id="surpriseButton" class="btn-primary magnetic">
+              <button id="surpriseButton" class="surprise-btn">
                 One More Little Surprise
               </button>
             </div>
@@ -618,6 +1646,339 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      const loader = document.getElementById("loader");
+      const page = document.getElementById("page");
+      const enterButton = document.getElementById("enterButton");
+      const audioToggle = document.getElementById("audioToggle");
+      const progressBar = document.getElementById("progressBar");
+      const backToTop = document.getElementById("backToTop");
+      const cursorGlow = document.querySelector(".cursor-glow");
+      const floatingLayer = document.getElementById("floatingLayer");
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalMessage = document.getElementById("modalMessage");
+      const closeModal = document.getElementById("closeModal");
+      const surpriseButton = document.getElementById("surpriseButton");
+      const heartScore = document.getElementById("heartScore");
+      const gameArena = document.getElementById("gameArena");
+      const typewriterElement = document.getElementById("typewriter");
+      const words = [
+        "A soft little universe made just for the one I admire.",
+        "A place where tenderness lives in every corner.",
+        "A dreamy scroll filled with affection, calm, and warm little surprises.",
+      ];
+      let wordIndex = 0,
+        charIndex = 0,
+        typingInterval,
+        audioContext,
+        audioEnabled = false,
+        oscillator,
+        gainNode,
+        score = 0;
+      function revealOnScroll() {
+        const els = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting)
+                entry.target.classList.add("is-visible");
+            });
+          },
+          { threshold: 0.16 },
+        );
+        els.forEach((el) => observer.observe(el));
+      }
+      function typeWriter() {
+        const current = words[wordIndex];
+        typewriterElement.textContent = current.slice(0, charIndex);
+        charIndex += 1;
+        if (charIndex > current.length) {
+          clearInterval(typingInterval);
+          setTimeout(() => {
+            typingInterval = setInterval(() => {
+              const current = words[wordIndex];
+              if (charIndex > 0) {
+                typewriterElement.textContent = current.slice(0, charIndex);
+                charIndex -= 1;
+              } else {
+                clearInterval(typingInterval);
+                wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(() => {
+                  charIndex = 0;
+                  typeWriter();
+                }, 600);
+              }
+            }, 35);
+          }, 1400);
+          return;
+        }
+        typingInterval = setInterval(typeWriter, 55);
+      }
+      function animateCounters() {
+        document.querySelectorAll(".counter").forEach((counter) => {
+          const target = Number(counter.dataset.target || 0);
+          const duration = 1400;
+          const start = performance.now();
+          const step = (now) => {
+            const p = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const value = Math.floor(eased * target);
+            counter.textContent = value.toLocaleString();
+            if (p < 1) requestAnimationFrame(step);
+            else counter.textContent = target.toLocaleString();
+          };
+          requestAnimationFrame(step);
+        });
+      }
+      function createFloatingElements() {
+        const hearts = ["♡", "♥"];
+        const stars = ["✦", "✧"];
+        setInterval(() => {
+          const heart = document.createElement("div");
+          heart.className = "floating-heart";
+          heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+          heart.style.left = `${Math.random() * 100}vw`;
+          heart.style.top = "100vh";
+          floatingLayer.appendChild(heart);
+          setTimeout(() => heart.remove(), 6200);
+        }, 1200);
+        setInterval(() => {
+          const star = document.createElement("div");
+          star.className = "floating-star";
+          star.textContent = stars[Math.floor(Math.random() * stars.length)];
+          star.style.left = `${Math.random() * 100}vw`;
+          star.style.top = "100vh";
+          floatingLayer.appendChild(star);
+          setTimeout(() => star.remove(), 6200);
+        }, 1800);
+      }
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const height =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const progress = height > 0 ? (scrollTop / height) * 100 : 0;
+        progressBar.style.width = `${progress}%`;
+        backToTop.classList.toggle("visible", scrollTop > 600);
+      }
+      function openModal(title, message) {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modal.classList.remove("hidden");
+        modal.setAttribute("aria-hidden", "false");
+      }
+      function closeModalWindow() {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+      }
+      function spawnHeartBurst(x, y) {
+        for (let i = 0; i < 10; i += 1) {
+          const burst = document.createElement("div");
+          burst.className = "heart-drop";
+          burst.textContent = "♥";
+          burst.style.left = `${x}px`;
+          burst.style.top = `${y}px`;
+          burst.style.transform = `translate(${(Math.random() - 0.5) * 80}px, ${(Math.random() - 0.5) * 80}px)`;
+          gameArena.appendChild(burst);
+          setTimeout(() => burst.remove(), 700);
+        }
+      }
+      function setupGame() {
+        gameArena.addEventListener("click", (event) => {
+          if (event.target === gameArena) {
+            const rect = gameArena.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            spawnHeartBurst(x, y);
+            score += 1;
+            heartScore.textContent = score;
+            const compliments = [
+              "Your softness is my favorite kind of light.",
+              "You make calm feel like a gift.",
+              "I adore the way you simply exist.",
+              "Even your little chaos feels lovely to me.",
+            ];
+            const note = document.createElement("div");
+            note.className = "mini-note";
+            note.style.position = "absolute";
+            note.style.left = `${x}px`;
+            note.style.top = `${y + 24}px`;
+            note.innerHTML = `<p>${compliments[score % compliments.length]}</p>`;
+            gameArena.appendChild(note);
+            setTimeout(() => note.remove(), 1200);
+          }
+        });
+      }
+      function toggleAudio() {
+        if (!audioContext) {
+          const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+          audioContext = new AudioContextClass();
+          oscillator = audioContext.createOscillator();
+          gainNode = audioContext.createGain();
+          oscillator.type = "sine";
+          oscillator.frequency.value = 420;
+          gainNode.gain.value = 0.0003;
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          oscillator.start();
+        }
+        audioEnabled = !audioEnabled;
+        if (audioEnabled) {
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.04,
+            audioContext.currentTime + 0.4,
+          );
+          audioToggle.innerHTML =
+            '<i class="fa-solid fa-volume-high"></i><span>Soft audio on</span>';
+        } else {
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.0003,
+            audioContext.currentTime + 0.4,
+          );
+          audioToggle.innerHTML =
+            '<i class="fa-solid fa-music"></i><span>Soft audio off</span>';
+        }
+      }
+      function attachMagneticButtons() {
+        document.querySelectorAll(".magnetic").forEach((button) => {
+          button.addEventListener("mousemove", (event) => {
+            const rect = button.getBoundingClientRect();
+            const offsetX = event.clientX - rect.left;
+            const offsetY = event.clientY - rect.top;
+            const x = (offsetX / rect.width - 0.5) * 8;
+            const y = (offsetY / rect.height - 0.5) * 8;
+            button.style.transform = `translate(${x}px, ${y}px)`;
+          });
+          button.addEventListener("mouseleave", () => {
+            button.style.transform = "";
+          });
+        });
+      }
+      function attachTiltEffects() {
+        document.querySelectorAll(".tilt-card").forEach((card) => {
+          card.addEventListener("mousemove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform = `perspective(1000px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateY(-4px)`;
+          });
+          card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+          });
+        });
+      }
+      function attachFlipCards() {
+        document.querySelectorAll(".flip-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            card.classList.toggle("is-flipped");
+          });
+        });
+      }
+      function attachSecretNotes() {
+        document.querySelectorAll(".note-card").forEach((button) => {
+          button.addEventListener("click", () => {
+            openModal(button.dataset.title, button.dataset.message);
+            for (let i = 0; i < 12; i += 1) {
+              const sparkle = document.createElement("div");
+              sparkle.className = "floating-heart";
+              sparkle.textContent = "✦";
+              sparkle.style.left = `${Math.random() * 100}vw`;
+              sparkle.style.top = `${Math.random() * 100}vh`;
+              floatingLayer.appendChild(sparkle);
+              setTimeout(() => sparkle.remove(), 2500);
+            }
+          });
+        });
+      }
+      function attachCursorGlow() {
+        window.addEventListener("pointermove", (event) => {
+          cursorGlow.style.left = `${event.clientX}px`;
+          cursorGlow.style.top = `${event.clientY}px`;
+        });
+      }
+      function buildConstellation() {
+        const visual = document.getElementById("constellationVisual");
+        if (!visual) return;
+        const points = [
+          { x: 18, y: 24 },
+          { x: 40, y: 38 },
+          { x: 58, y: 22 },
+          { x: 72, y: 40 },
+          { x: 82, y: 18 },
+          { x: 68, y: 68 },
+          { x: 48, y: 76 },
+          { x: 28, y: 64 },
+        ];
+        points.forEach((point) => {
+          const star = document.createElement("div");
+          star.className = "star";
+          star.style.left = `${point.x}%`;
+          star.style.top = `${point.y}%`;
+          visual.appendChild(star);
+        });
+        for (let i = 0; i < points.length - 1; i += 1) {
+          const line = document.createElement("div");
+          const a = points[i],
+            b = points[i + 1];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const length = Math.hypot(dx, dy);
+          const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+          line.className = "line";
+          line.style.left = `${a.x}%`;
+          line.style.top = `${a.y}%`;
+          line.style.width = `${length}%`;
+          line.style.transform = `rotate(${angle}deg)`;
+          visual.appendChild(line);
+        }
+      }
+      function initialize() {
+        revealOnScroll();
+        typeWriter();
+        createFloatingElements();
+        setupGame();
+        attachMagneticButtons();
+        attachTiltEffects();
+        attachFlipCards();
+        attachSecretNotes();
+        attachCursorGlow();
+        buildConstellation();
+        animateCounters();
+        updateProgress();
+        window.addEventListener("scroll", updateProgress);
+        window.addEventListener("resize", updateProgress);
+        enterButton.addEventListener("click", () => {
+          loader.classList.add("hidden");
+          page.classList.remove("hidden");
+          document.body.style.overflow = "auto";
+        });
+        closeModal.addEventListener("click", closeModalWindow);
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) closeModalWindow();
+        });
+        surpriseButton.addEventListener("click", () => {
+          openModal(
+            "A little surprise",
+            "I made all of this because you mean a lot to me, Kulsum. And if I could, I would keep coding little worlds just to see you smile.",
+          );
+          for (let i = 0; i < 24; i += 1) {
+            const sparkle = document.createElement("div");
+            sparkle.className = "floating-heart";
+            sparkle.textContent = "✦";
+            sparkle.style.left = `${Math.random() * 100}vw`;
+            sparkle.style.top = `${Math.random() * 100}vh`;
+            floatingLayer.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 2500);
+          }
+        });
+        backToTop.addEventListener("click", () =>
+          window.scrollTo({ top: 0, behavior: "smooth" }),
+        );
+        audioToggle.addEventListener("click", toggleAudio);
+        setTimeout(() => animateCounters(), 400);
+      }
+      window.addEventListener("load", initialize);
+    </script>
   </body>
 </html>
